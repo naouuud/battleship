@@ -1,4 +1,8 @@
-const { placeShip, receiveAttack, allSunk } = require("./board");
+const {
+  createPlaceShip,
+  createReceiveAttack,
+  createAllSunk,
+} = require("./board");
 
 describe("placeShip", () => {
   const fakeBoard = [
@@ -17,13 +21,14 @@ describe("placeShip", () => {
     const fakeShipFactory = (length) => {
       expect(length).toBe(4);
     };
-    placeShip(fakeBoard, fakeShipFactory, testCoordinates);
+    createPlaceShip(fakeBoard, fakeShipFactory);
   });
   it("updates board correctly after placing ship", () => {
     const fakeShipFactory = (length) => {
       return {};
     };
-    placeShip(fakeBoard, fakeShipFactory, testCoordinates);
+    const placeShip = createPlaceShip(fakeBoard, fakeShipFactory);
+    placeShip(testCoordinates);
     expect(fakeBoard[0].ship).toEqual({});
   });
 });
@@ -37,19 +42,22 @@ describe("receiveAttack", () => {
       },
     };
     const fakeBoard = [{ coordinates: [0, 1], ship: fakeShip }];
-    receiveAttack(fakeBoard, [0, 1]);
+    const receiveAttack = createReceiveAttack(fakeBoard, []);
+    receiveAttack([0, 1]);
     expect(fakeShip.hits).toBe(7);
   });
   it("records missed shot", () => {
     const missedSquares = [];
     const fakeBoard = [{ coordinates: [0, 0], ship: null }];
-    receiveAttack(fakeBoard, [0, 0], missedSquares);
+    const receiveAttack = createReceiveAttack(fakeBoard, missedSquares);
+    receiveAttack([0, 0]);
     expect(missedSquares[0]).toEqual([0, 0]);
   });
   it("doesn't consider true hit missed", () => {
     const missedSquares = [];
     const fakeBoard = [{ coordinates: [0, 0], ship: { hit: () => {} } }];
-    receiveAttack(fakeBoard, [0, 0], missedSquares);
+    const receiveAttack = createReceiveAttack(fakeBoard, missedSquares);
+    receiveAttack([0, 0]);
     expect(missedSquares[0]).toBeUndefined();
   });
 });
@@ -65,7 +73,8 @@ describe("allSunk", () => {
       { coordinates: [0, 1], ship: { length: 3, hits: 3, isSunk } },
       { coordinates: [1, 1], ship: { length: 4, hits: 4, isSunk } },
     ];
-    expect(allSunk(fakeBoard)).toBe(true);
+    const allSunk = createAllSunk(fakeBoard);
+    expect(allSunk()).toBe(true);
   });
   it("recognizes when not all ships sunk", () => {
     const fakeBoard = [
@@ -73,7 +82,8 @@ describe("allSunk", () => {
       { coordinates: [0, 1], ship: { length: 3, hits: 3, isSunk } },
       { coordinates: [1, 1], ship: { length: 4, hits: 4, isSunk } },
     ];
-    expect(allSunk(fakeBoard)).toBe(false);
+    const allSunk = createAllSunk(fakeBoard);
+    expect(allSunk()).toBe(false);
   });
   it("handles multiple references to same ship", () => {
     const titanic = { length: 5, hits: 5, isSunk };
@@ -83,6 +93,7 @@ describe("allSunk", () => {
       { coordinates: [0, 1], ship: carpathia },
       { coordinates: [1, 1], ship: carpathia },
     ];
-    expect(allSunk(fakeBoard)).toBe(false);
+    const allSunk = createAllSunk(fakeBoard);
+    expect(allSunk()).toBe(false);
   });
 });

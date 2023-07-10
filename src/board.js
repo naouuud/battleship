@@ -1,4 +1,4 @@
-const placeShip = (board, factory, coordinates) => {
+const createPlaceShip = (board, factory) => (coordinates) => {
   const length = coordinates.length;
   const ship = factory(length);
   coordinates.forEach((coordinate) => {
@@ -11,17 +11,17 @@ const placeShip = (board, factory, coordinates) => {
   return board;
 };
 
-const receiveAttack = (board, attackCoordinates, missedShots) => {
+const createReceiveAttack = (board, missed) => (attackCoordinates) => {
   const square = board.find(
     (square) =>
       JSON.stringify(square.coordinates) === JSON.stringify(attackCoordinates)
   );
   const ship = square.ship;
   if (ship) ship.hit();
-  else missedShots.push(square.coordinates);
+  else missed.push(square.coordinates);
 };
 
-const allSunk = (board) => {
+const createAllSunk = (board) => () => {
   const allShips = [];
   board.forEach((square) => {
     if (square.ship && !allShips.includes(square.ship))
@@ -34,4 +34,4 @@ const allSunk = (board) => {
   return allSunk;
 };
 
-module.exports = { placeShip, receiveAttack, allSunk };
+module.exports = { createPlaceShip, createAllSunk, createReceiveAttack };
