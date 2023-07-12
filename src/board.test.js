@@ -46,19 +46,25 @@ describe("receiveAttack", () => {
     receiveAttack([0, 1]);
     expect(fakeShip.hits).toBe(7);
   });
-  it("records missed shot", () => {
-    const missedSquares = [];
-    const fakeBoard = [{ coordinates: [0, 0], ship: null }];
-    const receiveAttack = createReceiveAttack(fakeBoard, missedSquares);
+  it("records coordinates of missed attack for future reference", () => {
+    // const alreadyHit = [];
+    const fakeBoard = [{ coordinates: [0, 0], ship: null, alreadyHit: false }];
+    const receiveAttack = createReceiveAttack(fakeBoard);
     receiveAttack([0, 0]);
-    expect(missedSquares[0]).toEqual([0, 0]);
+    expect(fakeBoard[0].alreadyHit).toBe(true);
   });
-  it("doesn't consider true hit missed", () => {
-    const missedSquares = [];
-    const fakeBoard = [{ coordinates: [0, 0], ship: { hit: () => {} } }];
-    const receiveAttack = createReceiveAttack(fakeBoard, missedSquares);
+  it("records coordinates of true attack for future reference", () => {
+    const fakeBoard = [
+      { coordinates: [0, 0], ship: { hit: () => {} }, alreadyHit: false },
+    ];
+    const receiveAttack = createReceiveAttack(fakeBoard);
     receiveAttack([0, 0]);
-    expect(missedSquares[0]).toBeUndefined();
+    expect(fakeBoard[0].alreadyHit).toBe(true);
+  });
+  it("rejects hit to same square twice", () => {
+    const fakeBoard = [{ coordinates: [0, 0], ship: null, alreadyHit: true }];
+    const receiveAttack = createReceiveAttack(fakeBoard);
+    expect(receiveAttack([0, 0])).toBe("Illegal");
   });
 });
 

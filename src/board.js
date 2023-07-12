@@ -11,14 +11,15 @@ const createPlaceShip = (board, factory) => (coordinates) => {
   return board;
 };
 
-const createReceiveAttack = (board, missed) => (attackCoordinates) => {
+const createReceiveAttack = (board) => (attackCoordinates) => {
   const square = board.find(
     (square) =>
       JSON.stringify(square.coordinates) === JSON.stringify(attackCoordinates)
   );
+  if (square.alreadyHit) return "Illegal";
   const ship = square.ship;
   if (ship) ship.hit();
-  else missed.push(square.coordinates);
+  square.alreadyHit = true;
 };
 
 const createAllSunk = (board) => () => {
