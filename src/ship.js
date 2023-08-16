@@ -1,3 +1,4 @@
+// ship has length, hits (increment with hits()) and isSunk()
 const shipFactory = (length) => {
   return {
     length,

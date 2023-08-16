@@ -35,4 +35,19 @@ const createAllSunk = (board) => () => {
   return allSunk;
 };
 
-module.exports = { createPlaceShip, createAllSunk, createReceiveAttack };
+// newBoard, might move this elsewhere (a general utilities module?)
+const newBoard = (len) => {
+  columns = [];
+  for (let i = 0; i < len; i++) {
+    columns[i] = [];
+    for (let j = 0; j < len; j++) columns[i].push(0);
+  }
+  return columns;
+};
+
+module.exports = {
+  createPlaceShip,
+  createAllSunk,
+  createReceiveAttack,
+  newBoard,
+};
