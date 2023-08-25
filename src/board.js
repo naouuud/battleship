@@ -1,25 +1,29 @@
-const createPlaceShip = (board, factory) => (coordinates) => {
-  const length = coordinates.length;
-  const ship = factory(length);
-  coordinates.forEach((coordinate) => {
-    const square = board.find(
-      (square) =>
-        JSON.stringify(square.coordinates) === JSON.stringify(coordinate)
-    );
-    square.ship = ship;
-  });
-  return board;
-};
-
-const createReceiveAttack = (board) => (attackCoordinates) => {
-  const square = board.find(
-    (square) =>
-      JSON.stringify(square.coordinates) === JSON.stringify(attackCoordinates)
-  );
-  if (square.alreadyHit) return "Illegal";
-  const ship = square.ship;
-  if (ship) ship.hit();
-  square.alreadyHit = true;
+const newBoard = (factory, len) => {
+  const list = [];
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < len; j++) {
+      list.push(makeSquare(i, j));
+    }
+  }
+  const get = (coordinate) => {
+    const index = len * coordinate[0] + coordinate[1];
+    return list[index];
+  };
+  const placeShip = (coordinates) => {
+    const length = coordinates.length;
+    const ship = factory(length);
+    coordinates.forEach((coordinate) => {
+      get(coordinate).ship = ship;
+    });
+  };
+  const receiveAttack = (coordinates) => {
+    const square = get(coordinates);
+    if (square.hit) return "illegal";
+    const ship = square.ship;
+    if (ship) ship.hit();
+    square.hit++;
+  };
+  return { get, placeShip, receiveAttack };
 };
 
 const createAllSunk = (board) => () => {
@@ -35,19 +39,11 @@ const createAllSunk = (board) => () => {
   return allSunk;
 };
 
-// newBoard, might move this elsewhere (a general utilities module?)
-const newBoard = (len) => {
-  columns = [];
-  for (let i = 0; i < len; i++) {
-    columns[i] = [];
-    for (let j = 0; j < len; j++) columns[i].push(0);
-  }
-  return columns;
+const makeSquare = (x, y, ship = 0, hit = 0) => {
+  return { x, y, ship, hit };
 };
 
 module.exports = {
-  createPlaceShip,
   createAllSunk,
-  createReceiveAttack,
   newBoard,
 };
