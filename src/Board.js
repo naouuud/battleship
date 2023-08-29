@@ -32,6 +32,7 @@ const Board = (length) => {
       const ship = checkShip(coordinate);
       if (ship) ship.life -= 1;
       board[index] += 1;
+      if (ship.life == 0) return "sunk";
     } else return "illegal";
   };
 
@@ -47,7 +48,7 @@ const Board = (length) => {
     return ships.reduce((prev, curr) => prev && shipSunk(curr), true);
   };
 
-  return { get, createShip, checkShip, hit, createSendHit, shipSunk, allSunk };
+  return { get, createShip, checkShip, hit, createSendHit, allSunk };
 };
 
 module.exports = { Board };

@@ -55,7 +55,7 @@ it("hits correct ship", () => {
   expect(testBoard.checkShip([4, 5])).toEqual({ life: 2 });
 });
 
-it("identifies sunken ship", () => {
+it("identifies when all ships sunk", () => {
   let testBoard = Board(10);
   testCoordinates = [
     [4, 5],
@@ -64,5 +64,13 @@ it("identifies sunken ship", () => {
     [7, 5],
   ];
   testBoard.createShip(testCoordinates);
-  expect(testBoard.shipSunk(testBoard.checkShip([4, 5]))).toBe(false);
+  expect(testBoard.allSunk()).toBe(false);
+  expect(testBoard.hit([4, 5])).toBe(undefined);
+  expect(testBoard.allSunk()).toBe(false);
+  expect(testBoard.hit([5, 5])).toBe(undefined);
+  expect(testBoard.allSunk()).toBe(false);
+  expect(testBoard.hit([6, 5])).toBe(undefined);
+  expect(testBoard.allSunk()).toBe(false);
+  expect(testBoard.hit([7, 5])).toBe("sunk");
+  expect(testBoard.allSunk()).toBe(true);
 });

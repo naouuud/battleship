@@ -1,11 +1,8 @@
-const { Board } = require("./Board");
-const { Settings } = require("./Settings");
-
-const Game = (board, settings) => {
+const Player = (board, settings) => {
   const p = board(settings.length);
   const c = board(settings.length);
-  p.sendHit = p.createSendHit(c);
-  c.sendHit = c.createSendHit(p);
+  p.sendHit = () => p.createSendHit(c);
+  c.sendHit = () => c.createSendHit(p);
 
   const utils = ((settings) => {
     const random = () => {
@@ -16,3 +13,5 @@ const Game = (board, settings) => {
 
   return { p, c, utils };
 };
+
+module.exports = { Player };
