@@ -1,5 +1,5 @@
 const { createAllSunk, newBoard } = require("./board");
-const { shipFactory } = require("./ship");
+const { shipFactory } = require("../ship");
 
 describe("placeShip", () => {
   const testCoordinates = [
