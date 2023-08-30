@@ -6,6 +6,7 @@ const Board = (length) => {
     }
     return array;
   })();
+
   const ships = new Array(length * length);
 
   const get = (coordinate) => {
@@ -17,22 +18,29 @@ const Board = (length) => {
   const createShip = (coordinates) => {
     const ship = { life: coordinates.length };
     coordinates.forEach((coordinate) => {
-      ships[get(coordinate)] = ship;
+      const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;
+      ships[index] = ship;
+      // console.log(ships);
     });
   };
 
   const checkShip = (coordinate) => {
     const index = get(coordinate);
-    return ships[index] ? ships[index] : false;
+    const result = ships[index];
+    // console.log(result);
+    return result ? ships[index] : null;
   };
 
   const hit = (coordinate) => {
     const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;
     if (board[index] == 0) {
+      board[index] = 1;
       const ship = checkShip(coordinate);
-      if (ship) ship.life -= 1;
-      board[index] += 1;
-      if (ship.life == 0) return "sunk";
+      if (ship) {
+        ship.life -= 1;
+        // console.log(ship.life);
+        if (ship.life == 0) alert("sunk");
+      }
     } else return "illegal";
   };
 
@@ -51,4 +59,4 @@ const Board = (length) => {
   return { get, createShip, checkShip, hit, createSendHit, allSunk };
 };
 
-module.exports = { Board };
+module.exports = Board;

@@ -1,6 +1,7 @@
-const { Board } = require("./Board");
+const Board = require("./Board");
 
-it("gets correct index based on coordinates", () => {
+it("returns correct index based on coordinates", () => {
+  //incoming query
   let testBoard = Board(10);
   expect(testBoard.get([0, 4])).toBe(4);
   expect(testBoard.get([1, 4])).toBe(14);
@@ -13,6 +14,7 @@ it("gets correct index based on coordinates", () => {
 });
 
 it("places ships correctly", () => {
+  //incoming command
   let testBoard = Board(10);
   testCoordinates = [
     [4, 5],
@@ -21,13 +23,14 @@ it("places ships correctly", () => {
     [7, 5],
   ];
   testBoard.createShip(testCoordinates);
-  expect(testBoard.checkShip([3, 4])).toBe(false);
+  expect(testBoard.checkShip([3, 4])).toBe(null);
   expect(testBoard.checkShip([4, 5])).toEqual({ life: 4 });
   expect(testBoard.checkShip([5, 5])).toEqual({ life: 4 });
-  expect(testBoard.checkShip([8, 5])).toBe(false);
+  expect(testBoard.checkShip([8, 5])).toBe(null);
 });
 
 it("records hit", () => {
+  //incoming command
   const testBoard = Board(10);
   expect(testBoard.hit([5, 5])).toBe(undefined);
   expect(testBoard.hit([5, 5])).toBe("illegal");
@@ -36,6 +39,7 @@ it("records hit", () => {
 });
 
 it("hits correct ship", () => {
+  //incoming command
   let testBoard = Board(10);
   testCoordinates = [
     [4, 5],
@@ -55,7 +59,8 @@ it("hits correct ship", () => {
   expect(testBoard.checkShip([4, 5])).toEqual({ life: 2 });
 });
 
-it("identifies when all ships sunk", () => {
+it("returns when all ships sunk", () => {
+  //incoming query
   let testBoard = Board(10);
   testCoordinates = [
     [4, 5],

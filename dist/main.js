@@ -119,23 +119,43 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 
 /***/ }),
 
-/***/ "./src/board.js":
+/***/ "./src/Board.js":
 /*!**********************!*\
-  !*** ./src/board.js ***!
+  !*** ./src/Board.js ***!
   \**********************/
 /***/ ((module) => {
 
-eval("const createPlaceShip = (board, factory) => (coordinates) => {\n  const length = coordinates.length;\n  const ship = factory(length);\n  coordinates.forEach((coordinate) => {\n    const square = board.find(\n      (square) =>\n        JSON.stringify(square.coordinates) === JSON.stringify(coordinate)\n    );\n    square.ship = ship;\n  });\n  return board;\n};\n\nconst createReceiveAttack = (board) => (attackCoordinates) => {\n  const square = board.find(\n    (square) =>\n      JSON.stringify(square.coordinates) === JSON.stringify(attackCoordinates)\n  );\n  if (square.alreadyHit) return \"Illegal\";\n  const ship = square.ship;\n  if (ship) ship.hit();\n  square.alreadyHit = true;\n};\n\nconst createAllSunk = (board) => () => {\n  const allShips = [];\n  board.forEach((square) => {\n    if (square.ship && !allShips.includes(square.ship))\n      allShips.push(square.ship);\n  });\n  let allSunk = true;\n  allShips.forEach((ship) => {\n    allSunk = allSunk && ship.isSunk();\n  });\n  return allSunk;\n};\n\n// newBoard, might move this elsewhere (a general utilities module?)\nconst newBoard = (len) => {\n  columns = [];\n  for (let i = 0; i < len; i++) {\n    columns[i] = [];\n    for (let j = 0; j < len; j++) columns[i].push(0);\n  }\n  return columns;\n};\n\nmodule.exports = {\n  createPlaceShip,\n  createAllSunk,\n  createReceiveAttack,\n  newBoard,\n};\n\n\n//# sourceURL=webpack://battleship/./src/board.js?");
+eval("const Board = (length) => {\n  const board = (() => {\n    const array = new Array();\n    for (let i = 0; i < length * length; i++) {\n      array.push(0);\n    }\n    return array;\n  })();\n\n  const ships = new Array(length * length);\n\n  const get = (coordinate) => {\n    if (coordinate[0] >= length || coordinate[1] >= length) return;\n    const index = length * coordinate[0] + coordinate[1];\n    return index;\n  };\n\n  const createShip = (coordinates) => {\n    const ship = { life: coordinates.length };\n    coordinates.forEach((coordinate) => {\n      const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;\n      ships[index] = ship;\n      // console.log(ships);\n    });\n  };\n\n  const checkShip = (coordinate) => {\n    const index = get(coordinate);\n    const result = ships[index];\n    // console.log(result);\n    return result ? ships[index] : null;\n  };\n\n  const hit = (coordinate) => {\n    const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;\n    if (board[index] == 0) {\n      board[index] = 1;\n      const ship = checkShip(coordinate);\n      if (ship) {\n        ship.life -= 1;\n        // console.log(ship.life);\n        if (ship.life == 0) alert(\"sunk\");\n      }\n    } else return \"illegal\";\n  };\n\n  const createSendHit = (otherPlayer) => (coordinate) => {\n    otherPlayer.hit(coordinate);\n  };\n\n  const shipSunk = (ship) => {\n    return ship.life == 0 ? true : false;\n  };\n\n  const allSunk = () => {\n    return ships.reduce((prev, curr) => prev && shipSunk(curr), true);\n  };\n\n  return { get, createShip, checkShip, hit, createSendHit, allSunk };\n};\n\nmodule.exports = Board;\n\n\n//# sourceURL=webpack://battleship/./src/Board.js?");
 
 /***/ }),
 
-/***/ "./src/game.js":
+/***/ "./src/Game.js":
 /*!*********************!*\
-  !*** ./src/game.js ***!
+  !*** ./src/Game.js ***!
   \*********************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("const { createPlaceShip, newBoard } = __webpack_require__(/*! ./board */ \"./src/board.js\");\nconst { shipFactory } = __webpack_require__(/*! ./ship */ \"./src/ship.js\");\n\nconst newGame = (param) => {\n  // initialize all (IFFE?)\n  const placeShip = createPlaceShip(newBoard((len = 10)), shipFactory);\n};\n\n// export to index for testing\nmodule.exports = { newBoard, placeShip };\n\n\n//# sourceURL=webpack://battleship/./src/game.js?");
+eval("// const { Board } = require(\"./Board\");\n// const { Player } = require(\"/Player\");\n// const { Settings } = require(\"./Settings\");\nconst { pShips, cShips } = __webpack_require__(/*! ./test-ships */ \"./src/test-ships.js\");\n\nconst Game = (board, settings, makePlayer) => {\n  const player = makePlayer(board, settings);\n  // for testing\n  if (player) {\n    player.p.createShip(pShips[0]);\n    player.p.createShip(pShips[1]);\n  }\n  if (player) {\n    player.c.createShip(cShips[0]);\n    player.c.createShip(cShips[1]);\n  }\n\n  const state = {};\n\n  const start = () => {\n    state.turn = player.p;\n    state.winner = null;\n    play();\n  };\n\n  const declareWinner = () => {\n    alert(\"Winner!\");\n  };\n\n  const checkState = () => {\n    if (state.winner) {\n      declareWinner(state.winner);\n      state.turn = null;\n    }\n  };\n\n  const checkTurn = () => {\n    return state.turn;\n  };\n\n  const switchTurn = () => {\n    state.turn = state.turn.next;\n  };\n\n  alertShipSunk = () => {\n    alert(\"Ship sunk!\");\n  };\n\n  retrieveCoordinate = () => {\n    const x = Number(prompt(\"x:\"));\n    const y = Number(prompt(\"y:\"));\n    return [x, y];\n  };\n\n  const play = () => {\n    checkState();\n    const turn = checkTurn();\n    if (turn) {\n      if (turn == player.c) {\n        alert(\"Computer turn\"); //test\n        const sunkResponse = player.c.sendHit(player.utils.random());\n        if (sunkResponse == \"sunk\") alertShipSunk();\n        const allSunkResponse = player.p.allSunk();\n        if (allSunkResponse) {\n          state.winner = player.c;\n        }\n      } else if (turn == player.p) {\n        const sunkResponse = player.p.sendHit(retrieveCoordinate());\n        if (sunkResponse == \"sunk\") alertShipSunk();\n        const allSunkResponse = player.c.allSunk();\n        if (allSunkResponse) {\n          state.winner = player.p;\n        }\n      }\n      switchTurn();\n      play();\n    } else return;\n  };\n\n  return { start };\n};\n\nmodule.exports = Game;\n\n\n//# sourceURL=webpack://battleship/./src/Game.js?");
+
+/***/ }),
+
+/***/ "./src/Player.js":
+/*!***********************!*\
+  !*** ./src/Player.js ***!
+  \***********************/
+/***/ ((module) => {
+
+eval("const Player = (board, settings) => {\n  const p = board(settings.length);\n  const c = board(settings.length);\n  p.sendHit = p.createSendHit(c);\n  p.next = c;\n  c.sendHit = c.createSendHit(p);\n  c.next = p;\n\n  const utils = (() => {\n    const random = () => {\n      return Math.floor(Math.random() * settings.length * settings.length);\n    };\n\n    return { random };\n  })();\n\n  return { p, c, utils };\n};\n\nmodule.exports = Player;\n\n\n//# sourceURL=webpack://battleship/./src/Player.js?");
+
+/***/ }),
+
+/***/ "./src/Settings.js":
+/*!*************************!*\
+  !*** ./src/Settings.js ***!
+  \*************************/
+/***/ ((module) => {
+
+eval("const Settings = {\n  length: 8,\n};\n\nmodule.exports = Settings;\n\n\n//# sourceURL=webpack://battleship/./src/Settings.js?");
 
 /***/ }),
 
@@ -145,17 +165,17 @@ eval("const { createPlaceShip, newBoard } = __webpack_require__(/*! ./board */ \
   \**********************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("__webpack_require__(/*! ./style.css */ \"./src/style.css\");\nconst { newBoard, placeShip } = __webpack_require__(/*! ./game */ \"./src/game.js\");\n\nconsole.log(\"BATTLESHIPS GALORE!\");\nconsole.log(newBoard());\nconsole.log(placeShip);\n\n\n//# sourceURL=webpack://battleship/./src/index.js?");
+eval("__webpack_require__(/*! ./style.css */ \"./src/style.css\");\nconst Game = __webpack_require__(/*! ./Game */ \"./src/Game.js\");\nconst Board = __webpack_require__(/*! ./Board */ \"./src/Board.js\");\nconst Player = __webpack_require__(/*! ./Player */ \"./src/Player.js\");\nconst Settings = __webpack_require__(/*! ./Settings */ \"./src/Settings.js\");\n\nconst game = Game(Board, Settings, Player);\nwindow.game = game;\n\n\n//# sourceURL=webpack://battleship/./src/index.js?");
 
 /***/ }),
 
-/***/ "./src/ship.js":
-/*!*********************!*\
-  !*** ./src/ship.js ***!
-  \*********************/
+/***/ "./src/test-ships.js":
+/*!***************************!*\
+  !*** ./src/test-ships.js ***!
+  \***************************/
 /***/ ((module) => {
 
-eval("// ship has length, hits (increment with hits()) and isSunk()\nconst shipFactory = (length) => {\n  return {\n    length,\n    hits: 0,\n    isSunk: function () {\n      if (this.length === this.hits) return true;\n      else return false;\n    },\n    hit: function () {\n      this.hits++;\n    },\n  };\n};\n\nmodule.exports = { shipFactory };\n\n\n//# sourceURL=webpack://battleship/./src/ship.js?");
+eval("const pShips = [\n  [\n    [0, 2],\n    [0, 3],\n    [0, 4],\n    [0, 5],\n  ],\n  [\n    [5, 1],\n    [5, 2],\n  ],\n];\n\nconst cShips = [\n  [\n    [1, 7],\n    [2, 7],\n    [3, 7],\n    [4, 7],\n  ],\n  [\n    [4, 3],\n    [4, 4],\n  ],\n];\n\nmodule.exports = { pShips, cShips };\n\n\n//# sourceURL=webpack://battleship/./src/test-ships.js?");
 
 /***/ })
 

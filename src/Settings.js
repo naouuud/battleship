@@ -1,7 +1,5 @@
-const Settings = (DOM) => {
-  return {
-    length: DOM.length,
-  };
+const Settings = {
+  length: 8,
 };
 
-module.exports = { Settings };
+module.exports = Settings;
