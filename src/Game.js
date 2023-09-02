@@ -3,8 +3,9 @@
 // const { Settings } = require("./Settings");
 const { pShips, cShips } = require("./test-ships");
 
-const Game = (board, settings, makePlayer) => {
+const Game = (board, settings, makePlayer, makeDOM) => {
   const player = makePlayer(board, settings);
+  const dom = makeDOM();
   // for testing
   if (player) {
     player.p.createShip(pShips[0]);
@@ -15,66 +16,62 @@ const Game = (board, settings, makePlayer) => {
     player.c.createShip(cShips[1]);
   }
 
-  const state = {};
-
-  const start = () => {
-    state.turn = player.p;
-    state.winner = null;
-    play();
+  // initial state
+  let state = {
+    turn: null,
+    length: settings.length,
+    cBoard: player.c.board,
+    pBoard: player.p.board,
+    cShips: player.c.ships,
+    pShips: player.p.ships,
+    winner: null,
   };
+  dom.build(state);
 
-  const declareWinner = () => {
-    alert("Winner!");
-  };
+  // function updateAllBoards() {
+  //   state = Object.assign(state, {
+  //     cBoard: player.c.board,
+  //     pBoard: player.p.board,
+  //     cShips: player.c.ships,
+  //     pShips: player.p.ships,
+  //   });
+  // }
 
-  const checkState = () => {
-    if (state.winner) {
-      declareWinner(state.winner);
+  const checkWinner = () => {
+    if (player.c.allSunk()) {
       state.turn = null;
+      alert("Player wins!");
+    }
+    if (player.p.allSunk()) {
+      state.turn = null;
+      alert("Computer wins!");
     }
   };
 
-  const checkTurn = () => {
-    return state.turn;
-  };
-
-  const switchTurn = () => {
-    state.turn = state.turn.next;
-  };
-
-  alertShipSunk = () => {
-    alert("Ship sunk!");
-  };
-
-  retrieveCoordinate = () => {
-    const x = Number(prompt("x:"));
-    const y = Number(prompt("y:"));
-    return [x, y];
-  };
-
   const play = () => {
-    checkState();
-    const turn = checkTurn();
-    if (turn) {
-      if (turn == player.c) {
-        alert("Computer turn"); //test
-        const sunkResponse = player.c.sendHit(player.utils.random());
-        if (sunkResponse == "sunk") alertShipSunk();
-        const allSunkResponse = player.p.allSunk();
-        if (allSunkResponse) {
-          state.winner = player.c;
-        }
-      } else if (turn == player.p) {
-        const sunkResponse = player.p.sendHit(retrieveCoordinate());
-        if (sunkResponse == "sunk") alertShipSunk();
-        const allSunkResponse = player.c.allSunk();
-        if (allSunkResponse) {
-          state.winner = player.p;
-        }
+    checkWinner();
+    if (state.turn) {
+      if (state.turn === "player") {
+        // console.log("player");
+        player.p.sendHit(player.utils.random());
+        dom.build(state);
+        state.turn = "computer";
+      } else if (state.turn === "computer") {
+        // console.log("computer");
+        player.c.sendHit(player.utils.random());
+        dom.build(state);
+        state.turn = "player";
       }
-      switchTurn();
-      play();
+      // updateBoards();
+      // switchTurn();
+      setTimeout(play, 20);
     } else return;
+  };
+
+  const start = () => {
+    state.turn = "player";
+    state.winner = null;
+    play();
   };
 
   return { start };

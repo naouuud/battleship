@@ -1,3 +1,36 @@
 * {
-  background-color: blanchedalmond;
+  background-color: lightblue;
+}
+
+.boards {
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 400px;
+  height: 400px;
+}
+
+.square {
+  border: 1px solid blue;
+}
+
+.not-hit {
+  background-color: aqua;
+}
+
+.hit-empty {
+  background-color: blue;
+}
+
+.hit-ship {
+  background-color: brown;
+}
+
+.destroyed-ship {
+  background-color: darkslategray;
 }

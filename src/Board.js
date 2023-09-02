@@ -24,39 +24,44 @@ const Board = (length) => {
     });
   };
 
-  const checkShip = (coordinate) => {
-    const index = get(coordinate);
+  const checkShip = (index) => {
+    // const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;
     const result = ships[index];
     // console.log(result);
     return result ? ships[index] : null;
   };
 
-  const hit = (coordinate) => {
-    const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;
-    if (board[index] == 0) {
+  const hit = (index) => {
+    if (board[index] === 0) {
       board[index] = 1;
-      const ship = checkShip(coordinate);
-      if (ship) {
-        ship.life -= 1;
-        // console.log(ship.life);
-        if (ship.life == 0) alert("sunk");
-      }
-    } else return "illegal";
+      const ship = checkShip(index);
+      if (ship) ship.life -= 1;
+    } else return;
   };
 
   const createSendHit = (otherPlayer) => (coordinate) => {
-    otherPlayer.hit(coordinate);
+    const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;
+    otherPlayer.hit(index);
   };
 
   const shipSunk = (ship) => {
-    return ship.life == 0 ? true : false;
+    return ship.life === 0 ? true : false;
   };
 
   const allSunk = () => {
     return ships.reduce((prev, curr) => prev && shipSunk(curr), true);
   };
 
-  return { get, createShip, checkShip, hit, createSendHit, allSunk };
+  return {
+    get,
+    createShip,
+    checkShip,
+    hit,
+    createSendHit,
+    allSunk,
+    board,
+    ships,
+  };
 };
 
 module.exports = Board;
