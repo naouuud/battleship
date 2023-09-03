@@ -2,6 +2,11 @@
   background-color: lightblue;
 }
 
+h1 {
+  font-family: monospace;
+  margin-bottom: 50px;
+}
+
 .boards {
   display: flex;
   flex-direction: row;
@@ -9,6 +14,16 @@
 }
 
 .board {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.label {
+  font-family: monospace;
+}
+
+.squares {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   width: 400px;
@@ -16,21 +31,31 @@
 }
 
 .square {
-  border: 1px solid blue;
+  border: 2px solid cadetblue;
+  box-sizing: border-box;
 }
 
-.not-hit {
-  background-color: aqua;
-}
-
-.hit-empty {
+.blue {
   background-color: blue;
 }
 
-.hit-ship {
+.white-border {
+  border: 2px dashed white;
+}
+
+.grey {
+  background-color: darkslategrey;
+}
+
+.brown {
   background-color: brown;
 }
 
-.destroyed-ship {
-  background-color: darkslategray;
+.purple {
+  background-color: purple;
+}
+
+.attack {
+  margin-top: 100px;
+  font-family: monospace;
 }

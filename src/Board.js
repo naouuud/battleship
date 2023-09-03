@@ -20,14 +20,11 @@ const Board = (length) => {
     coordinates.forEach((coordinate) => {
       const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;
       ships[index] = ship;
-      // console.log(ships);
     });
   };
 
   const checkShip = (index) => {
-    // const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;
     const result = ships[index];
-    // console.log(result);
     return result ? ships[index] : null;
   };
 

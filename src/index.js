@@ -6,4 +6,4 @@ const Settings = require("./Settings");
 const DOM = require("./DOM");
 
 const game = Game(Board, Settings, Player, DOM);
-window.game = game;
+game.start();
