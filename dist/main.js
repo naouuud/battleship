@@ -16,7 +16,7 @@
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `* {\n  background-color: blanchedalmond;\n}\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://battleship/./src/style.css?./node_modules/css-loader/dist/cjs.js");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `* {\n  background-color: lightblue;\n}\n\nh1 {\n  font-family: monospace;\n  margin-bottom: 50px;\n}\n\n.boards {\n  display: flex;\n  flex-direction: row;\n  gap: 100px;\n}\n\n.board {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n\n.label {\n  font-family: monospace;\n}\n\n.squares {\n  display: grid;\n  grid-template-columns: repeat(8, 1fr);\n  width: 400px;\n  height: 400px;\n}\n\n.square {\n  border: 2px solid cadetblue;\n  box-sizing: border-box;\n}\n\n.blue {\n  background-color: blue;\n}\n\n.white-border {\n  border: 2px dashed white;\n}\n\n.grey {\n  background-color: darkslategrey;\n}\n\n.brown {\n  background-color: brown;\n}\n\n.purple {\n  background-color: purple;\n}\n\n.attack {\n  margin-top: 100px;\n  font-family: monospace;\n}\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://battleship/./src/style.css?./node_modules/css-loader/dist/cjs.js");
 
 /***/ }),
 
@@ -119,23 +119,53 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 
 /***/ }),
 
-/***/ "./src/board.js":
+/***/ "./src/Board.js":
 /*!**********************!*\
-  !*** ./src/board.js ***!
+  !*** ./src/Board.js ***!
   \**********************/
 /***/ ((module) => {
 
-eval("const createPlaceShip = (board, factory) => (coordinates) => {\n  const length = coordinates.length;\n  const ship = factory(length);\n  coordinates.forEach((coordinate) => {\n    const square = board.find(\n      (square) =>\n        JSON.stringify(square.coordinates) === JSON.stringify(coordinate)\n    );\n    square.ship = ship;\n  });\n  return board;\n};\n\nconst createReceiveAttack = (board) => (attackCoordinates) => {\n  const square = board.find(\n    (square) =>\n      JSON.stringify(square.coordinates) === JSON.stringify(attackCoordinates)\n  );\n  if (square.alreadyHit) return \"Illegal\";\n  const ship = square.ship;\n  if (ship) ship.hit();\n  square.alreadyHit = true;\n};\n\nconst createAllSunk = (board) => () => {\n  const allShips = [];\n  board.forEach((square) => {\n    if (square.ship && !allShips.includes(square.ship))\n      allShips.push(square.ship);\n  });\n  let allSunk = true;\n  allShips.forEach((ship) => {\n    allSunk = allSunk && ship.isSunk();\n  });\n  return allSunk;\n};\n\n// newBoard, might move this elsewhere (a general utilities module?)\nconst newBoard = (len) => {\n  columns = [];\n  for (let i = 0; i < len; i++) {\n    columns[i] = [];\n    for (let j = 0; j < len; j++) columns[i].push(0);\n  }\n  return columns;\n};\n\nmodule.exports = {\n  createPlaceShip,\n  createAllSunk,\n  createReceiveAttack,\n  newBoard,\n};\n\n\n//# sourceURL=webpack://battleship/./src/board.js?");
+eval("const Board = (length) => {\n  const board = (() => {\n    const array = new Array();\n    for (let i = 0; i < length * length; i++) {\n      array.push(0);\n    }\n    return array;\n  })();\n\n  const ships = new Array(length * length);\n\n  const get = (coordinate) => {\n    if (coordinate[0] >= length || coordinate[1] >= length) return;\n    const index = length * coordinate[0] + coordinate[1];\n    return index;\n  };\n\n  const createShip = (coordinates) => {\n    const ship = { life: coordinates.length };\n    coordinates.forEach((coordinate) => {\n      const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;\n      ships[index] = ship;\n    });\n  };\n\n  const checkShip = (index) => {\n    const result = ships[index];\n    return result ? ships[index] : null;\n  };\n\n  const hit = (index) => {\n    if (board[index] === 0) {\n      board[index] = 1;\n      const ship = checkShip(index);\n      if (ship) ship.life -= 1;\n    } else return;\n  };\n\n  const createSendHit = (otherPlayer) => (coordinate) => {\n    const index = Array.isArray(coordinate) ? get(coordinate) : coordinate;\n    otherPlayer.hit(index);\n  };\n\n  const shipSunk = (ship) => {\n    return ship.life === 0 ? true : false;\n  };\n\n  const allSunk = () => {\n    return ships.reduce((prev, curr) => prev && shipSunk(curr), true);\n  };\n\n  return {\n    get,\n    createShip,\n    checkShip,\n    hit,\n    createSendHit,\n    allSunk,\n    board,\n    ships,\n  };\n};\n\nmodule.exports = Board;\n\n\n//# sourceURL=webpack://battleship/./src/Board.js?");
 
 /***/ }),
 
-/***/ "./src/game.js":
+/***/ "./src/DOM.js":
+/*!********************!*\
+  !*** ./src/DOM.js ***!
+  \********************/
+/***/ ((module) => {
+
+eval("const DOM = (state) => {\n  const title = document.createElement(\"h1\");\n  title.innerText = \"Battleships\";\n  document.body.appendChild(title);\n\n  const boards = document.createElement(\"div\");\n  boards.classList.add(\"boards\");\n  document.body.appendChild(boards);\n\n  const attack = document.createElement(\"div\");\n  attack.classList.add(\"attack\");\n  document.body.appendChild(attack);\n\n  const build = () => {\n    document.querySelector(\".boards\").innerHTML = \"\";\n    document.querySelector(\".attack\").innerText = \"\";\n\n    const ownBoard = document.createElement(\"div\");\n    ownBoard.classList.add(\"board\");\n    ownBoard.classList.add(\"own\");\n    boards.appendChild(ownBoard);\n\n    const pSquares = document.createElement(\"div\");\n    pSquares.classList.add(\"squares\");\n    ownBoard.appendChild(pSquares);\n\n    for (let i = 0; i < state.pBoard.length; i++) {\n      const div = document.createElement(\"div\");\n      div.classList.add(\"square\");\n      div.setAttribute(\"index\", i);\n      if (!state.pShips[i]) {\n        div.classList.add(\"blue\");\n        if (state.pBoard[i] === 1) {\n          div.classList.add(\"white-border\");\n        }\n      } else if (state.pShips[i].life === 0) {\n        div.classList.add(\"purple\");\n      } else if (state.pBoard[i] === 1) {\n        div.classList.add(\"brown\");\n      } else div.classList.add(\"grey\");\n      pSquares.appendChild(div);\n    }\n\n    const pLabel = document.createElement(\"div\");\n    pLabel.classList.add(\"label\");\n    pLabel.innerText = \"Your board\";\n    ownBoard.append(pLabel);\n\n    const oppBoard = document.createElement(\"div\");\n    oppBoard.classList.add(\"board\");\n    oppBoard.classList.add(\"opp\");\n    boards.appendChild(oppBoard);\n\n    const cSquares = document.createElement(\"div\");\n    cSquares.classList.add(\"squares\");\n    oppBoard.appendChild(cSquares);\n\n    for (let i = 0; i < state.cBoard.length; i++) {\n      const div = document.createElement(\"div\");\n      div.classList.add(\"square\");\n      div.setAttribute(\"index\", i);\n      if (state.cBoard[i] === 1) {\n        if (!state.cShips[i]) {\n          div.classList.add(\"blue\");\n        } else if (state.cShips[i].life === 0) {\n          div.classList.add(\"purple\");\n        } else {\n          div.classList.add(\"brown\");\n        }\n      }\n      cSquares.appendChild(div);\n    }\n\n    const cLabel = document.createElement(\"div\");\n    cLabel.classList.add(\"label\");\n    cLabel.innerText = \"Opponent board\";\n    oppBoard.append(cLabel);\n  };\n\n  return { build };\n};\n\nmodule.exports = DOM;\n\n\n//# sourceURL=webpack://battleship/./src/DOM.js?");
+
+/***/ }),
+
+/***/ "./src/Game.js":
 /*!*********************!*\
-  !*** ./src/game.js ***!
+  !*** ./src/Game.js ***!
   \*********************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("const { createPlaceShip, newBoard } = __webpack_require__(/*! ./board */ \"./src/board.js\");\nconst { shipFactory } = __webpack_require__(/*! ./ship */ \"./src/ship.js\");\n\nconst newGame = (param) => {\n  // initialize all (IFFE?)\n  const placeShip = createPlaceShip(newBoard((len = 10)), shipFactory);\n};\n\n// export to index for testing\nmodule.exports = { newBoard, placeShip };\n\n\n//# sourceURL=webpack://battleship/./src/game.js?");
+eval("// const { Board } = require(\"./Board\");\n// const { Player } = require(\"/Player\");\n// const { Settings } = require(\"./Settings\");\nconst { pShips, cShips } = __webpack_require__(/*! ./test-ships */ \"./src/test-ships.js\");\n\nconst Game = (board, settings, makePlayer, makeDOM) => {\n  const player = makePlayer(board, settings);\n\n  if (player) {\n    player.p.createShip([4, 5, 6, 7]);\n    player.p.createShip([9, 17, 25, 33]);\n    player.p.createShip([39, 47, 55]);\n    player.p.createShip([56, 57]);\n  }\n  if (player) {\n    player.c.createShip([0, 1, 2, 3]);\n    player.c.createShip([16, 24, 32, 40]);\n    player.c.createShip([21, 22, 23]);\n    player.c.createShip([39, 47, 55, 63]);\n  }\n\n  let state = {\n    length: settings.length,\n    cBoard: player.c.board,\n    pBoard: player.p.board,\n    cShips: player.c.ships,\n    pShips: player.p.ships,\n    active: true,\n  };\n  const dom = makeDOM(state);\n\n  const checkWinner = () => {\n    if (player.c.allSunk()) {\n      state.active = false;\n      document.querySelector(\".attack\").innerText = \"You win!\";\n    }\n    if (player.p.allSunk()) {\n      state.active = false;\n      document.querySelector(\".attack\").innerText = \"You lose!\";\n    }\n  };\n\n  const pPlay = () => {\n    checkWinner();\n    if (state.active) {\n      const attack = document.querySelector(\".attack\");\n      attack.innerText = \"Attack your opponent!\";\n      const squares = document.querySelectorAll(\".opp .square\");\n      for (let i = 0; i < squares.length; i++) {\n        if (state.cBoard[i] === 0) {\n          squares[i].addEventListener(\"click\", (e) => {\n            const index = e.target.getAttribute(\"index\");\n            player.p.sendHit(index);\n            dom.build(state);\n            cPlay();\n          });\n        }\n      }\n    }\n  };\n\n  const cPlay = () => {\n    checkWinner();\n    if (state.active) {\n      setTimeout(() => {\n        let random = player.utils.random();\n        while (state.pBoard[random] === 1) {\n          random = player.utils.random();\n        }\n        player.c.sendHit(random);\n        dom.build(state);\n        pPlay();\n      }, 1200);\n    }\n  };\n\n  const start = () => {\n    dom.build();\n    pPlay();\n  };\n\n  return { start };\n};\n\nmodule.exports = Game;\n\n\n//# sourceURL=webpack://battleship/./src/Game.js?");
+
+/***/ }),
+
+/***/ "./src/Player.js":
+/*!***********************!*\
+  !*** ./src/Player.js ***!
+  \***********************/
+/***/ ((module) => {
+
+eval("const Player = (board, settings) => {\n  const p = board(settings.length);\n  const c = board(settings.length);\n  p.sendHit = p.createSendHit(c);\n  c.sendHit = c.createSendHit(p);\n\n  const utils = (() => {\n    const random = () => {\n      return Math.floor(Math.random() * settings.length * settings.length);\n    };\n\n    return { random };\n  })();\n\n  return { p, c, utils };\n};\n\nmodule.exports = Player;\n\n\n//# sourceURL=webpack://battleship/./src/Player.js?");
+
+/***/ }),
+
+/***/ "./src/Settings.js":
+/*!*************************!*\
+  !*** ./src/Settings.js ***!
+  \*************************/
+/***/ ((module) => {
+
+eval("const Settings = {\n  length: 8,\n};\n\nmodule.exports = Settings;\n\n\n//# sourceURL=webpack://battleship/./src/Settings.js?");
 
 /***/ }),
 
@@ -145,17 +175,17 @@ eval("const { createPlaceShip, newBoard } = __webpack_require__(/*! ./board */ \
   \**********************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("__webpack_require__(/*! ./style.css */ \"./src/style.css\");\nconst { newBoard, placeShip } = __webpack_require__(/*! ./game */ \"./src/game.js\");\n\nconsole.log(\"BATTLESHIPS GALORE!\");\nconsole.log(newBoard());\nconsole.log(placeShip);\n\n\n//# sourceURL=webpack://battleship/./src/index.js?");
+eval("__webpack_require__(/*! ./style.css */ \"./src/style.css\");\nconst Game = __webpack_require__(/*! ./Game */ \"./src/Game.js\");\nconst Board = __webpack_require__(/*! ./Board */ \"./src/Board.js\");\nconst Player = __webpack_require__(/*! ./Player */ \"./src/Player.js\");\nconst Settings = __webpack_require__(/*! ./Settings */ \"./src/Settings.js\");\nconst DOM = __webpack_require__(/*! ./DOM */ \"./src/DOM.js\");\n\nconst game = Game(Board, Settings, Player, DOM);\ngame.start();\n\n\n//# sourceURL=webpack://battleship/./src/index.js?");
 
 /***/ }),
 
-/***/ "./src/ship.js":
-/*!*********************!*\
-  !*** ./src/ship.js ***!
-  \*********************/
+/***/ "./src/test-ships.js":
+/*!***************************!*\
+  !*** ./src/test-ships.js ***!
+  \***************************/
 /***/ ((module) => {
 
-eval("// ship has length, hits (increment with hits()) and isSunk()\nconst shipFactory = (length) => {\n  return {\n    length,\n    hits: 0,\n    isSunk: function () {\n      if (this.length === this.hits) return true;\n      else return false;\n    },\n    hit: function () {\n      this.hits++;\n    },\n  };\n};\n\nmodule.exports = { shipFactory };\n\n\n//# sourceURL=webpack://battleship/./src/ship.js?");
+eval("const pShips = [\n  [\n    [0, 2],\n    [0, 3],\n    [0, 4],\n    [0, 5],\n  ],\n  [\n    [5, 1],\n    [5, 2],\n  ],\n];\n\nconst cShips = [\n  [\n    [1, 7],\n    [2, 7],\n  ],\n  [\n    [4, 3],\n    [4, 4],\n  ],\n];\n\nmodule.exports = { pShips, cShips };\n\n\n//# sourceURL=webpack://battleship/./src/test-ships.js?");
 
 /***/ })
 

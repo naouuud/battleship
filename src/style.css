@@ -1,3 +1,61 @@
 * {
-  background-color: blanchedalmond;
+  background-color: lightblue;
+}
+
+h1 {
+  font-family: monospace;
+  margin-bottom: 50px;
+}
+
+.boards {
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.label {
+  font-family: monospace;
+}
+
+.squares {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 400px;
+  height: 400px;
+}
+
+.square {
+  border: 2px solid cadetblue;
+  box-sizing: border-box;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.white-border {
+  border: 2px dashed white;
+}
+
+.grey {
+  background-color: darkslategrey;
+}
+
+.brown {
+  background-color: brown;
+}
+
+.purple {
+  background-color: purple;
+}
+
+.attack {
+  margin-top: 100px;
+  font-family: monospace;
 }

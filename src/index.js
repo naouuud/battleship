@@ -1,6 +1,9 @@
 require("./style.css");
-const { newBoard, placeShip } = require("./game");
+const Game = require("./Game");
+const Board = require("./Board");
+const Player = require("./Player");
+const Settings = require("./Settings");
+const DOM = require("./DOM");
 
-console.log("BATTLESHIPS GALORE!");
-console.log(newBoard());
-console.log(placeShip);
+const game = Game(Board, Settings, Player, DOM);
+game.start();
