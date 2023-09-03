@@ -6,27 +6,15 @@ const { pShips, cShips } = require("./test-ships");
 const Game = (board, settings, makePlayer, makeDOM) => {
   const player = makePlayer(board, settings);
 
-  if (player) {
-    player.p.createShip([4, 5, 6, 7]);
-    player.p.createShip([9, 17, 25, 33]);
-    player.p.createShip([39, 47, 55]);
-    player.p.createShip([56, 57]);
-  }
-  if (player) {
-    player.c.createShip([0, 1, 2, 3]);
-    player.c.createShip([16, 24, 32, 40]);
-    player.c.createShip([21, 22, 23]);
-    player.c.createShip([39, 47, 55, 63]);
-  }
-
-  let state = {
-    length: settings.length,
-    cBoard: player.c.board,
-    pBoard: player.p.board,
-    cShips: player.c.ships,
-    pShips: player.p.ships,
-    active: true,
-  };
+  const state = (() => {
+    const length = settings.length;
+    const cBoard = player.c.board;
+    const pBoard = player.p.board;
+    const cShips = player.c.ships;
+    const pShips = player.p.ships;
+    const active = true;
+    return { length, cBoard, pBoard, cShips, pShips, active };
+  })();
   const dom = makeDOM(state);
 
   const checkWinner = () => {
@@ -75,6 +63,16 @@ const Game = (board, settings, makePlayer, makeDOM) => {
   };
 
   const start = () => {
+    (function testShips() {
+      player.p.createShip([4, 5, 6, 7]);
+      player.p.createShip([9, 17, 25, 33]);
+      player.p.createShip([39, 47, 55]);
+      player.p.createShip([56, 57]);
+      player.c.createShip([0, 1, 2, 3]);
+      player.c.createShip([16, 24, 32, 40]);
+      player.c.createShip([21, 22, 23]);
+      player.c.createShip([39, 47, 55, 63]);
+    })();
     dom.build();
     pPlay();
   };
